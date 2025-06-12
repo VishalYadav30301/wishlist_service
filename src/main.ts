@@ -20,16 +20,23 @@ async function bootstrap() {
 
   // Swagger setup
   const config = new DocumentBuilder()
-    .setTitle('Cart Microservice API')
+    .setTitle('Cart and Wishlist Microservice API')
     .setDescription(`
-      The Cart Microservice API provides endpoints for managing shopping carts.
+      The Cart and Wishlist Microservice API provides endpoints for managing shopping carts and wishlists.
       
       ## Features
+      ### Cart
       - Get cart details
       - Add items to cart
       - Update item quantities
       - Remove items from cart
       - Clear cart
+
+      ### Wishlist
+      - Get wishlist details
+      - Add items to wishlist
+      - Remove items from wishlist
+      - Clear wishlist
       
       ## Authentication
       All endpoints require a valid JWT token in the Authorization header.
@@ -37,6 +44,7 @@ async function bootstrap() {
     `)
     .setVersion('1.0')
     .addTag('cart', 'Cart management endpoints')
+    .addTag('wishlist', 'Wishlist management endpoints')
     .addBearerAuth(
       {
         type: 'http',
@@ -57,7 +65,7 @@ async function bootstrap() {
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
     },
-    customSiteTitle: 'Cart Microservice API Documentation',
+    customSiteTitle: 'Cart and Wishlist Microservice API Documentation',
   });
 
   const port = process.env.PORT || 3002;
