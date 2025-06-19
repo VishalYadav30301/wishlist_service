@@ -487,3 +487,164 @@ docker run -p 3000:3000 cart-microservice
 ## License
 
 This project is licensed under the MIT License.
+
+# Wishlist Module
+
+A robust and scalable Wishlist module for e-commerce applications, built with NestJS, TypeScript, and MongoDB. This module allows users to manage their wishlist, add/remove items, and move items to the cart via gRPC microservices.
+
+## Features
+
+- Add items to wishlist
+- Remove items from wishlist
+- Clear wishlist
+- Get wishlist details
+- Move wishlist items to cart (gRPC integration)
+- Input validation and error handling
+- Caching for performance
+- Swagger API documentation
+- Logging
+
+## Tech Stack
+
+- **Framework:** NestJS
+- **Language:** TypeScript
+- **Database:** MongoDB (Mongoose ODM)
+- **API Docs:** Swagger/OpenAPI
+- **Validation:** class-validator
+- **gRPC Microservices:** Product, Auth, Cart
+
+## Endpoints
+
+All endpoints require JWT authentication.
+
+| Method | Endpoint                | Description                        |
+|--------|-------------------------|------------------------------------|
+| GET    | `/wishlist`             | Get wishlist details               |
+| POST   | `/wishlist/items`       | Add item to wishlist               |
+| DELETE | `/wishlist/items/:id`   | Remove item from wishlist          |
+| DELETE | `/wishlist`             | Clear wishlist                     |
+| POST   | `/wishlist/addToCart`   | Move item from wishlist to cart    |
+
+### Example DTO: AddItemsDto
+
+```typescript
+export class AddItemsDto {
+  productId: string; // required
+  quantity?: number; // optional, default 1
+}
+```
+
+## Wishlist Schema
+
+```typescript
+export class Wishlist {
+  userId: string;
+  items: WishlistItem[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export class WishlistItem {
+  productId: string;
+  name: string;
+  price: number;
+  image?: string;
+  category?: string;
+  description?: string;
+  variants?: any[];
+  totalStock?: number;
+  reviews?: any[];
+}
+```
+
+## Usage
+
+### Installation
+
+```bash
+npm install
+```
+
+### Running the Service
+
+```bash
+# Development
+npm run start:dev
+
+# Production
+npm run build
+npm run start:prod
+```
+
+### Environment Variables
+
+You must configure the following environment variables for gRPC and MongoDB connections:
+
+```
+MONGODB_URI=mongodb://localhost:27017/your-db
+PRODUCT_SERVICE_URL=grpc://localhost:50051
+AUTH_SERVICE_URL=grpc://localhost:50052
+CART_SERVICE_URL=grpc://localhost:50053
+```
+
+### Example Request: Add Item to Wishlist
+
+```http
+POST /wishlist/items
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "productId": "product123",
+  "quantity": 1
+}
+```
+
+### Example Request: Move Item to Cart
+
+```http
+POST /wishlist/addToCart
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "productId": "product123",
+  "quantity": 1
+}
+```
+
+## Error Handling
+
+- Returns `404` if wishlist or item is not found.
+- Returns `400` for invalid input or if item already exists.
+- Returns `401` for unauthorized access.
+
+## Caching
+
+- In-memory caching is used for wishlist and product details to improve performance.
+- Cache TTL: 5 minutes.
+
+## Project Structure
+
+```
+src/wishlist/
+  ├── dto/
+  │   └── AddItemsDto.ts
+  ├── schemas/
+  │   └── wishlist.schema.ts
+  ├── services/
+  │   └── cart-grpc.service.ts
+  ├── wishlist.controller.ts
+  ├── wishlist.module.ts
+  └── wishlist.service.ts
+```
+
+## Testing
+
+```bash
+npm run test
+```
+
+## API Documentation
+
+Swagger docs are available at `/api` when the app is running.
