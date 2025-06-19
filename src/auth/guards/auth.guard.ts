@@ -1,10 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Logger } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { lastValueFrom } from 'rxjs';
+import {lastValueFrom } from 'rxjs';
 import { AuthGrpcService } from '../services/auth-grpc.service';
 import { Request } from 'express';
 
-interface AuthenticatedRequest extends Request {
+interface AuthenticatedRequest extends Request{
   user?: {
     entityId: string;
   };
@@ -38,7 +37,6 @@ export class AuthGuard implements CanActivate {
       request.user = {
         entityId: response.entityId,
       };
-
       return true;
     } catch (error) {
       this.logger.error(`Token validation error: ${error.message}`, error.stack);
@@ -46,7 +44,7 @@ export class AuthGuard implements CanActivate {
     }
   }
 
-  private extractTokenFromHeader(request: AuthenticatedRequest): string | undefined {
+  private extractTokenFromHeader(request: AuthenticatedRequest): string | undefined{
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }

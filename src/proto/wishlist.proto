@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package wishlist;
+
+// Wishlist item message type
+message WishlistItem {
+  string productId = 1;
+  string name = 2;
+  double price = 3;
+  string image = 4;
+}
+
+// Wishlist message type
+message Wishlist {
+  string userId = 1;
+  repeated WishlistItem items = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+}
+
+// Request message for getting a wishlist
+message GetWishlistRequest {
+  string userId = 1;
+}
+
+// Request message for adding an item to wishlist
+message AddItemRequest {
+  string userId = 1;
+  AddWishlistItemDto item = 2;
+}
+
+// Request message for removing an item from wishlist
+message RemoveItemRequest {
+  string userId = 1;
+  string productId = 2;
+}
+
+// Request message for clearing wishlist
+message ClearWishlistRequest {
+  string userId = 1;
+}
+
+// Request message for adding wishlist items to cart
+message AddToCartRequest {
+  string userId = 1;
+  repeated string productIds = 2;
+}
+
+// Product details response
+message ProductDetails {
+  string name = 1;
+  double price = 2;
+  string imageUrl = 3;
+}
+
+// Response message for all operations
+message WishlistResponse {
+  int32 code = 1;
+  string status = 2;
+  string timestamp = 3;
+  Wishlist data = 4;
+  string error = 5;
+}
+
+// Response message for cart operations
+message CartResponse {
+  int32 code = 1;
+  string status = 2;
+  string timestamp = 3;
+  repeated string addedProductIds = 4;
+  string error = 5;
+}
+
+// Error response
+message ErrorResponse {
+  string message = 1;
+  string error = 2;
+  int32 statusCode = 3;
+}
+
+// Wishlist service definition
+service WishlistService {
+  // Get wishlist for a user
+  rpc GetWishlist(GetWishlistRequest) returns (WishlistResponse) {}
+  
+  // Add item to wishlist
+  rpc AddItem(AddItemRequest) returns (WishlistResponse) {}
+  
+  // Remove item from wishlist
+  rpc RemoveItem(RemoveItemRequest) returns (WishlistResponse) {}
+  
+  // Clear wishlist
+  rpc ClearWishlist(ClearWishlistRequest) returns (WishlistResponse) {}
+  
+  // Add wishlist items to cart
+  rpc AddToCart(AddToCartRequest) returns (CartResponse) {}
+} 

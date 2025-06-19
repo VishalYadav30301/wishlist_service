@@ -9,9 +9,15 @@ import {
   Request,
 } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { Wishlist } from './schemas/wishlist.schema';
-import { AddWishlistItemDto } from './dto/add-item.dto';
+import { AddItemsDto } from './dto/AddItemsDto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
 @ApiTags('Wishlist')
@@ -41,12 +47,12 @@ export class WishlistController {
     description: 'Item added to wishlist successfully',
     type: Wishlist,
   })
-  @ApiResponse({ status: 400, description: 'Invalid input or item already exists' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input or item already exists',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async addItem(
-    @Request() req,
-    @Body() addItemDto: AddWishlistItemDto,
-  ) {
+  async addItem(@Request() req, @Body() addItemDto: AddItemsDto) {
     return this.wishlistService.addItem(req.user.entityId, addItemDto);
   }
 
@@ -60,10 +66,7 @@ export class WishlistController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Wishlist or item not found' })
-  async removeItem(
-    @Request() req,
-    @Param('productId') productId: string,
-  ) {
+  async removeItem(@Request() req, @Param('productId') productId: string) {
     return this.wishlistService.removeItem(req.user.entityId, productId);
   }
 
@@ -79,4 +82,17 @@ export class WishlistController {
   async clearWishlist(@Request() req) {
     return this.wishlistService.clearWishlist(req.user.entityId);
   }
-} 
+
+  @Post('addToCart')
+  @ApiOperation({ summary: 'Add items to cart' })
+  @ApiResponse({
+    status: 200,
+    description: 'Items added to cart successfully',
+    type: Wishlist,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Wishlist not found' })
+  async addToCart(@Request() req, @Body() addToCartDto: AddItemsDto) {
+    return this.wishlistService.addToCart(req.user.entityId, addToCartDto);
+  }
+}

@@ -9,6 +9,10 @@ import { ProductService } from '../product/services/product.service';
 import { ProductGrpcService } from '../product/services/product-grpc.service';
 import { AuthService } from '../auth/services/auth.service';
 import { AuthGrpcService } from '../auth/services/auth-grpc.service';
+import { CartGrpcService } from './services/cart-grpc.service';
+
+require('dotenv').config();
+
 
 @Module({
   imports: [
@@ -19,8 +23,8 @@ import { AuthGrpcService } from '../auth/services/auth-grpc.service';
         transport: Transport.GRPC,
         options: {
           package: 'product',
-          protoPath: join(process.cwd(), 'src/proto/product.proto'),
-          url: process.env.PRODUCT_SERVICE_URL || '172.50.0.217:5001',
+          protoPath: join(__dirname, '../../src/proto/product.proto'),
+          url: process.env.PRODUCT_SERVICE_URL,
         },
       },
       {
@@ -28,8 +32,17 @@ import { AuthGrpcService } from '../auth/services/auth-grpc.service';
         transport: Transport.GRPC,
         options: {
           package: 'auth',
-          protoPath: join(process.cwd(), 'src/proto/auth.proto'),
-          url: process.env.AUTH_SERVICE_URL || '172.50.0.217:5052',
+          protoPath: join(__dirname, '../../src/proto/auth.proto'),
+          url: process.env.AUTH_SERVICE_URL,
+        },
+      },
+      {
+        name: 'CART_PACKAGE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'cart',
+          protoPath: join(__dirname, '../../src/proto/cart.proto'),
+          url: process.env.CART_SERVICE_URL,
         },
       },
     ]),
@@ -41,6 +54,7 @@ import { AuthGrpcService } from '../auth/services/auth-grpc.service';
     ProductGrpcService,
     AuthService,
     AuthGrpcService,
+    CartGrpcService,
   ],
   exports: [WishlistService],
 })

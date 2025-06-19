@@ -24,7 +24,7 @@ export class WishlistItem {
   })
   @Prop({ required: true })
   price: number;
-
+  
   @ApiProperty({
     description: 'Image URL of the product',
     example: 'https://example.com/image.jpg',
@@ -32,6 +32,48 @@ export class WishlistItem {
   })
   @Prop()
   image?: string;
+
+  @ApiProperty({
+    description: 'Category of the product',
+    example: 'Electronics',
+    required: false,
+  })
+  @Prop()
+  category?: string;
+
+  @ApiProperty({
+    description: 'Description of the product',
+    example: 'A high-quality electronic device.',
+    required: false,
+  })
+  @Prop()
+  description?: string;
+
+  @ApiProperty({
+    description: 'Variants of the product',
+    example: [{ color: 'red', size: 'M' }],
+    required: false,
+    type: [Object],
+  })
+  @Prop({ type: [Object], default: [] })
+  variants?: any[];
+
+  @ApiProperty({
+    description: 'Total stock of the product',
+    example: 100,
+    required: false,
+  })
+  @Prop()
+  totalStock?: number;
+
+  @ApiProperty({
+    description: 'Reviews of the product',
+    example: [{ user: 'user1', rating: 5, comment: 'Great!' }],
+    required: false,
+    type: [Object],
+  })
+  @Prop({ type: [Object], default: [] })
+  reviews?: any[];
 }
 
 @Schema({ timestamps: true })
@@ -49,7 +91,19 @@ export class Wishlist {
   })
   @Prop({ type: [WishlistItem], default: [] })
   items: WishlistItem[];
+
+  @ApiProperty({
+    description: 'Creation timestamp',
+    example: '2023-01-01T00:00:00.000Z',
+  })
+  createdAt?: string;
+
+  @ApiProperty({
+    description: 'Last update timestamp',
+    example: '2023-01-01T00:00:00.000Z',
+  })
+  updatedAt?: string;
 }
 
 export type WishlistDocument = Wishlist & Document;
-export const WishlistSchema = SchemaFactory.createForClass(Wishlist); 
+export const WishlistSchema = SchemaFactory.createForClass(Wishlist);
